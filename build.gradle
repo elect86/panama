@@ -1,0 +1,51 @@
+import static org.gradle.internal.os.OperatingSystem.*
+
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.21'
+}
+
+group 'Panama'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+ext {
+    lwjgl_version = "3.2.1"
+    lwjgl_natives = current() == WINDOWS ? "windows" : current() == LINUX ? "linux" : "macos"
+}
+
+repositories {
+    mavenCentral()
+    maven { setUrl("https://oss.sonatype.org/content/repositories/snapshots/") }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    ["", "-glfw", "-jemalloc", "-openal", "-opengl", "-stb", "-vulkan", "-jawt"].each {
+        implementation "org.lwjgl:lwjgl$it:$lwjgl_version"
+        if (it != "-vulkan" && it != "-jawt")
+            runtime "org.lwjgl:lwjgl$it:$lwjgl_version:natives-$lwjgl_natives"
+    }
+
+    compile files("opengl.jar", "glfw.jar")
+}
+
+compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs = ["-XXLanguage:+InlineClasses", "-Xjvm-default=enable"]
+        jvmTarget = "1.8"
+    }
+}
+
+task generateBindings(type:Exec) {
+
+    //on linux
+    commandLine '/usr/lib/jvm/jdk-13/bin/jextract -L /usr/lib/x86_64-linux-gnu  -l glut -l GLU -l GL --record-library-path -t opengl -o opengl.jar /usr/include/GL/glut.h'
+
+    commandLine '/usr/lib/jvm/jdk-13/bin/jextract -L /usr/lib/x86_64-linux-gnu  -l glfw --record-library-path -t glfw -o glfw.jar /usr/include/GLFW/glfw3.h /usr/include/GLFW/glfw3native.h'
+}
+
+compile.dependsOn generateBindings
