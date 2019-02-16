@@ -1,5 +1,5 @@
-import glfw.glfw3
-import glfw.glfw3_h.*
+import libGlfw.glfw3
+import libGlfw.glfw3_h.*
 import opengl.gl_h.*
 import org.lwjgl.system.MemoryUtil.memUTF8
 import org.lwjgl.system.MemoryUtil.nmemFree

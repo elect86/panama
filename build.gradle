@@ -11,6 +11,8 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
 ext {
+    kx = "com.github.kotlin-graphics"
+    gln_version = '42256d1618525ea96a91848ec21bcbe15cdeba29'
     lwjgl_version = "3.2.1"
     lwjgl_natives = current() == WINDOWS ? "windows" : current() == LINUX ? "linux" : "macos"
 }
@@ -18,13 +20,16 @@ ext {
 repositories {
     mavenCentral()
     maven { setUrl("https://oss.sonatype.org/content/repositories/snapshots/") }
+    maven { setUrl("https://jitpack.io") }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
-    ["", "-glfw", "-jemalloc", "-openal", "-opengl", "-stb", "-vulkan", "-jawt"].each {
+    api "$kx:gln:$gln_version".toString()
+
+    ["", "-jemalloc"].each {
         implementation "org.lwjgl:lwjgl$it:$lwjgl_version"
         if (it != "-vulkan" && it != "-jawt")
             runtime "org.lwjgl:lwjgl$it:$lwjgl_version:natives-$lwjgl_natives"
@@ -40,12 +45,12 @@ compileKotlin {
     }
 }
 
-task generateBindings(type:Exec) {
-
-    //on linux
-    commandLine '/usr/lib/jvm/jdk-13/bin/jextract -L /usr/lib/x86_64-linux-gnu  -l glut -l GLU -l GL --record-library-path -t opengl -o opengl.jar /usr/include/GL/glut.h'
-
-    commandLine '/usr/lib/jvm/jdk-13/bin/jextract -L /usr/lib/x86_64-linux-gnu  -l glfw --record-library-path -t glfw -o glfw.jar /usr/include/GLFW/glfw3.h /usr/include/GLFW/glfw3native.h'
-}
-
-compile.dependsOn generateBindings
+//task generateBindings(type:Exec) {
+//
+//    //on linux
+//    commandLine '/usr/lib/jvm/jdk-13/bin/jextract -L /usr/lib/x86_64-linux-gnu  -l glut -l GLU -l GL --record-library-path -t opengl -o opengl.jar /usr/include/GL/glut.h'
+//
+//    commandLine '/usr/lib/jvm/jdk-13/bin/jextract -L /usr/lib/x86_64-linux-gnu  -l glfw --record-library-path -t glfw -o glfw.jar /usr/include/GLFW/glfw3.h /usr/include/GLFW/glfw3native.h'
+//}
+//
+//compile.dependsOn generateBindings
