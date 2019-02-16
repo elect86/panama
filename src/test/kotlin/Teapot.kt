@@ -13,7 +13,7 @@ fun main() {
         glutInitDisplayMode(GLUT_DOUBLE or GLUT_RGBA or GLUT_DEPTH)
         glutInitWindowSize(900, 900)
         glutCreateWindow(sc.allocateCString("Hello Panama!"))
-        val teapot = TeapotK(sc)
+        val teapot = Teapot(sc)
 
         glutDisplayFunc(sc.allocateCallback(freeglut_std.FI2 { teapot.display() }))
         glutIdleFunc(sc.allocateCallback(freeglut_std.FI2 { teapot.onIdle() }))
@@ -21,7 +21,7 @@ fun main() {
     }
 }
 
-class TeapotK(sc: Scope) {
+class Teapot(sc: Scope) {
 
     internal var rot = 0f
 

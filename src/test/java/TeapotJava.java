@@ -6,11 +6,11 @@ import java.foreign.memory.Pointer;
 import static opengl.gl_h.*;
 import static opengl.freeglut_std_h.*;
 
-public class Teapot {
+public class TeapotJava {
 
     float rot = 0;
 
-    Teapot(Scope sc) {
+    TeapotJava(Scope sc) {
         // Misc Parameters
         Array<Float> pos = sc.allocateArray(NativeTypes.FLOAT, new float[] {0.0f, 15.0f, -15.0f, 0});
         Array<Float> spec = sc.allocateArray(NativeTypes.FLOAT, new float[] {1, 1, 1, 0});
@@ -54,7 +54,7 @@ public class Teapot {
             glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
             glutInitWindowSize(900, 900);
             glutCreateWindow(sc.allocateCString("Hello Panama!"));
-            Teapot teapot = new Teapot(sc);
+            TeapotJava teapot = new TeapotJava(sc);
             glutDisplayFunc(sc.allocateCallback(teapot::display));
             glutIdleFunc(sc.allocateCallback(teapot::onIdle));
             glutMainLoop();
