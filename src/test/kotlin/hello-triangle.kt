@@ -47,13 +47,6 @@ class Triangle(
             -1f, -1f, -1f, 0f, 0f, 1f,
             +1f, -1f, -1f, 0f, 1f, 0f,
             +0f, +1f, -1f, 1f, 0f, 0f))
-//    val colorBufferData = scope.allocateArray(
-//        NativeTypes.FLOAT, floatArrayOf(
-//            0f, 0f, 1f,
-//            0f, 1f, 0f,
-//            1f, 0f, 0f
-//        )
-//    )
     val indexBufferData = scope.allocateArray(NativeTypes.INT16, shortArrayOf(0, 1, 2))
 
     init {
@@ -75,11 +68,9 @@ class Triangle(
 
         // Init VAO
         val vertexBuffer = scope.allocInt()
-//        val colorBuffer = scope.allocInt()
         val indexBuffer = scope.allocInt()
         glGenVertexArrays(1, vertexArray)
         glGenBuffers(1, vertexBuffer)
-//        glGenBuffers(1, colorBuffer)
         glGenBuffers(1, indexBuffer)
 
         glBindVertexArray(vertexArray())
