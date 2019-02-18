@@ -36,9 +36,11 @@ open class GlfwWindow(var ptr: Pointer<GLFWwindow>) {
 
     constructor(
         width: Int, height: Int,
-        title: String, monitor: GLFWmonitor? = null,
-        share: GLFWwindow? = null
-    ) : this(scope(title) { glfwCreateWindow(width, height, it, monitor?.ptr(), share?.ptr()) })
+        title: String, monitor: GlfwMonitor? = null,
+        share: GlfwWindow? = null
+    ) : this(scope(title) {
+        glfwCreateWindow(width, height, it, monitor?.ptr ?: Pointer.nullPointer(), share?.ptr ?: Pointer.nullPointer())
+    })
 
 //    @Throws(RuntimeException::class)
 //    constructor(
@@ -618,7 +620,6 @@ open class GlfwWindow(var ptr: Pointer<GLFWwindow>) {
 //    }
 
 //    infix fun createSurface(instance: VkInstance) = glfw.createWindowSurface(handle, instance)
-
 
 
 //    val hwnd: HWND

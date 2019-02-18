@@ -66,7 +66,7 @@ object glfw {
 //            windowHint.forwardComp = true
 //    }
 
-    fun init(): Boolean = glfwInit().bool
+    fun init(): Boolean = glfwInit() == GLFW_TRUE
 
     fun terminate() {
         glfwTerminate()
@@ -96,7 +96,7 @@ object glfw {
     val monitors: Array<Pointer<GLFWmonitor>>?
         get() = scopeInt {
             val array = glfwGetMonitors(it).withSize(it().L)
-            Array(it()) {array[it]}
+            Array(it()) { array[it] }
         }
 
     val primaryMonitor: Pointer<GLFWmonitor>
@@ -189,4 +189,6 @@ object glfw {
     // TODO glfwGetPhysicalDevicePresentationSupport
 //    fun attachWin32Window(handle: HWND): GlfwWindowHandle =
 //        GlfwWindowHandle(GLFWNativeWin32.glfwAttachWin32Window(handle.L, NULL))
+
+    inline operator fun <R> invoke(block: glfw.() -> R): R = block()
 }

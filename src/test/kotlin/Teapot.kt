@@ -1,3 +1,4 @@
+import main.scope
 import opengl.freeglut_std
 import opengl.freeglut_std_h.*
 import opengl.gl_h.*
@@ -6,24 +7,24 @@ import java.foreign.Scope
 import java.foreign.memory.Pointer
 
 fun main() {
-    Scope.newNativeScope().use { sc ->
-        val argc = sc.allocate(NativeTypes.INT32)
+    scope {
+        val argc = allocate(NativeTypes.INT32)
         argc.set(0)
         glutInit(argc, Pointer.nullPointer())
         glutInitDisplayMode(GLUT_DOUBLE or GLUT_RGBA or GLUT_DEPTH)
         glutInitWindowSize(900, 900)
-        glutCreateWindow(sc.allocateCString("Hello Panama!"))
-        val teapot = Teapot(sc)
+        glutCreateWindow(allocateCString("Hello Panama!"))
+        val teapot = Teapot(this)
 
-        glutDisplayFunc(sc.allocateCallback(freeglut_std.FI2 { teapot.display() }))
-        glutIdleFunc(sc.allocateCallback(freeglut_std.FI2 { teapot.onIdle() }))
+        glutDisplayFunc(allocateCallback(freeglut_std.FI2 { teapot.display() }))
+        glutIdleFunc(allocateCallback(freeglut_std.FI2 { teapot.onIdle() }))
         glutMainLoop()
     }
 }
 
 class Teapot(sc: Scope) {
 
-    internal var rot = 0f
+    var rot = 0f
 
     init {
         // Misc Parameters
@@ -46,7 +47,7 @@ class Teapot(sc: Scope) {
         glEnable(GL_DEPTH_TEST)
     }
 
-    internal fun display() {
+    fun display() {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         glPushMatrix()
         glRotatef(-20f, 1f, 1f, 0f)
@@ -56,13 +57,8 @@ class Teapot(sc: Scope) {
         glutSwapBuffers()
     }
 
-    internal fun onIdle() {
+    fun onIdle() {
         rot += 0.1f
         glutPostRedisplay()
     }
-}
-
-inline fun Scope.use(block: (Scope) -> Unit) {
-    block(this)
-    close()
 }

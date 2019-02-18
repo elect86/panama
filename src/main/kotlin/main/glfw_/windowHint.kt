@@ -260,5 +260,6 @@ object windowHint {
         set(value) = scope(value) {
             glfwWindowHintString(GLFW_X11_INSTANCE_NAME, it)
         }
-}
 
+    inline operator fun invoke(block: windowHint.() -> Unit) = block()
+}
