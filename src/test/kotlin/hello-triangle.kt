@@ -15,7 +15,7 @@ import kotlin.system.exitProcess
 
 fun main() {
 
-    val window = glfw {
+    glfw {
 
         if (!init()) {
             System.err.println("Failed to initialize GLFW")
@@ -75,11 +75,11 @@ class Triangle(
 
         // Init VAO
         val vertexBuffer = scope.allocInt()
-        val colorBuffer = scope.allocInt()
+//        val colorBuffer = scope.allocInt()
         val indexBuffer = scope.allocInt()
         glGenVertexArrays(1, vertexArray)
         glGenBuffers(1, vertexBuffer)
-        glGenBuffers(1, colorBuffer)
+//        glGenBuffers(1, colorBuffer)
         glGenBuffers(1, indexBuffer)
 
         glBindVertexArray(vertexArray())
@@ -91,13 +91,13 @@ class Triangle(
         )
 
         glEnableVertexAttribArray(semantic.attr.POSITION)
-        val ptr0 = scope.allocate(NativeTypes.UINT64)
+        val ptr0 = scope.allocate(NativeTypes.LONG)
         ptr0.set(0L)
         val p0 = ptr0.cast(NativeTypes.VOID).cast(NativeTypes.VOID.pointer()).get()
         glVertexAttribPointer(semantic.attr.POSITION, Vec3.length, GL_FLOAT, GL_FALSE.b, Vec3.size * 2, p0)
 
         glEnableVertexAttribArray(semantic.attr.COLOR)
-        val ptr1 = scope.allocate(NativeTypes.UINT64)
+        val ptr1 = scope.allocate(NativeTypes.LONG)
         ptr1.set(Vec3.length.L)
         val p1 = ptr1.cast(NativeTypes.VOID).cast(NativeTypes.VOID.pointer()).get()
         glVertexAttribPointer(semantic.attr.COLOR, Vec3.length, GL_FLOAT, GL_FALSE.b, Vec3.size * 2, p1)
