@@ -91,13 +91,15 @@ class Triangle(
         )
 
         glEnableVertexAttribArray(semantic.attr.POSITION)
-        val p0 = scope.allocLong()
-        p0.set(0)
+        val ptr0 = scope.allocate(NativeTypes.UINT64)
+        ptr0.set(0L)
+        val p0 = ptr0.cast(NativeTypes.VOID).cast(NativeTypes.VOID.pointer()).get()
         glVertexAttribPointer(semantic.attr.POSITION, Vec3.length, GL_FLOAT, GL_FALSE.b, Vec3.size * 2, p0)
 
         glEnableVertexAttribArray(semantic.attr.COLOR)
-        val p1 = scope.allocate(NativeTypes.INT)
-        p1.set(12)
+        val ptr1 = scope.allocate(NativeTypes.UINT64)
+        ptr1.set(Vec3.length.L)
+        val p1 = ptr1.cast(NativeTypes.VOID).cast(NativeTypes.VOID.pointer()).get()
         glVertexAttribPointer(semantic.attr.COLOR, Vec3.length, GL_FLOAT, GL_FALSE.b, Vec3.size * 2, p1)
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer())
