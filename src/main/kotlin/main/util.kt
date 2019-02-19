@@ -28,7 +28,7 @@ fun Scope.allocFloat() = allocate(NativeTypes.FLOAT)
 fun Scope.allocDouble() = allocate(NativeTypes.DOUBLE)
 fun Scope.alloc(string: String) = allocateCString(string)
 fun Scope.allocVoidOf(int: Int): Pointer<Void>? {
-    val ptr0 = scope.allocate(NativeTypes.LONG)
+    val ptr0 = allocate(NativeTypes.LONG)
     ptr0.set(int.L)
     return ptr0.cast(NativeTypes.VOID).cast(NativeTypes.VOID.pointer()).get()
 }
