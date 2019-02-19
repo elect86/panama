@@ -89,7 +89,7 @@ object glfw {
         get() = glfwGetVersionString().asString
 
     val error: GlfwError
-        get() = GlfwError.values().first { it.code == glfwGetError(Pointer.nullPointer()) }
+        get() = GlfwError.values().first { it.code == glfwGetError(Pointer.ofNull()) }
 
     fun setErrorCallback(error: GlfwErrorFun?): GlfwErrorFun? = glfwSetErrorCallback(error)
 

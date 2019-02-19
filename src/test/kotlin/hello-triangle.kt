@@ -37,7 +37,6 @@ class Triangle(
     share: GlfwWindow? = null
 ) : GlfwWindow(width, height, title, monitor, share) {
 
-    val scope = Scope.newNativeScope()
     val program: Int
     val uniformMVP: Int
     val pMVP: Pointer<Float>
@@ -82,17 +81,11 @@ class Triangle(
         )
 
         glEnableVertexAttribArray(semantic.attr.POSITION)
-        val ptr0 = scope.allocate(NativeTypes.LONG)
-        ptr0.set(0L)
-        val p0 = ptr0.cast(NativeTypes.VOID).cast(NativeTypes.VOID.pointer()).get()
-        println(p0.addr())
+        val p0 = scope.allocVoidOf(0)
         glVertexAttribPointer(semantic.attr.POSITION, Vec3.length, GL_FLOAT, GL_FALSE.b, Vec3.size * 2, p0)
 
         glEnableVertexAttribArray(semantic.attr.COLOR)
-        val ptr1 = scope.allocate(NativeTypes.LONG)
-        ptr1.set(Vec3.size.L)
-        val p1 = ptr1.cast(NativeTypes.VOID).cast(NativeTypes.VOID.pointer()).get()
-        println(p1.addr())
+        val p1= scope.allocVoidOf(Vec3.size)
         glVertexAttribPointer(semantic.attr.COLOR, Vec3.length, GL_FLOAT, GL_FALSE.b, Vec3.size * 2, p1)
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer())
@@ -130,7 +123,7 @@ class Triangle(
         glUseProgram(program)
         glUniformMatrix4fv(uniformMVP, 1, GL_FALSE.b, pMVP)
         glBindVertexArray(vertexArray())
-        glDrawElementsBaseVertex(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, Pointer.nullPointer<Byte>(), 0)
+        glDrawElementsBaseVertex(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, Pointer.ofNull<Short>(), 0)
         glBindVertexArray(0)
     }
 }
@@ -196,7 +189,7 @@ fun makeShader(type: Int, source: String): Int = scope {
     val pSource = alloc(source)
     val ppSource = allocate(NativeTypes.INT8.pointer())
     ppSource.set(pSource)
-    glShaderSource(shader, 1, ppSource, Pointer.nullPointer())
+    glShaderSource(shader, 1, ppSource, Pointer.ofNull())
     glCompileShader(shader)
     glGetShaderiv(shader, GL_COMPILE_STATUS, shaderOk)
     if (shaderOk.get() == GL_FALSE) {
@@ -213,7 +206,7 @@ fun showInfoLog(shader: Int) = scope {
     glGetShaderiv(shader, GL_INFO_LOG_LENGTH, logLength)
     val i = logLength.get()
     val log = allocateArray(NativeTypes.INT8, i.L)
-    glGetShaderInfoLog(shader, logLength(), Pointer.nullPointer(), log.elementPointer())
+    glGetShaderInfoLog(shader, logLength(), Pointer.ofNull(), log.elementPointer())
     System.err.println(Pointer.toString(log.elementPointer()))
 }
 

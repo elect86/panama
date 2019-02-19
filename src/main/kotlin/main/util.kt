@@ -7,13 +7,9 @@ import java.foreign.memory.Pointer
 
 fun Char.parseInt() = java.lang.Character.getNumericValue(this)
 
+val scope get() = Scope.globalScope()
 
-inline fun <R> scope(block: Scope.() -> R): R {
-    val sc = Scope.newNativeScope()
-    return sc.block().also {
-        sc.close()
-    }
-}
+inline fun <R> scope(block: Scope.() -> R): R = scope.block()
 
 inline fun <R> scope(string: String, block: Scope.(Pointer<Byte>) -> R): R = scope { block(alloc(string)) }
 
@@ -31,6 +27,11 @@ fun Scope.allocLong() = allocate(NativeTypes.LONG)
 fun Scope.allocFloat() = allocate(NativeTypes.FLOAT)
 fun Scope.allocDouble() = allocate(NativeTypes.DOUBLE)
 fun Scope.alloc(string: String) = allocateCString(string)
+fun Scope.allocVoidOf(int: Int): Pointer<Void>? {
+    val ptr0 = scope.allocate(NativeTypes.LONG)
+    ptr0.set(int.L)
+    return ptr0.cast(NativeTypes.VOID).cast(NativeTypes.VOID.pointer()).get()
+}
 
 operator fun <T> Pointer<T>.invoke(): T = get()
 operator fun <T> java.foreign.memory.Array<T>.get(i: Int): T = get(i.L)
@@ -65,8 +66,11 @@ fun Pointer<Float>.toTypedArraySafe(size: Pointer<Int>): FloatArray? = when {
 fun Pointer<Float>.toTypedArray(size: Pointer<Int>): FloatArray = FloatArray(size()) { offset(it.L)() }
 
 fun Scope.alloc(floats: FloatArray): java.foreign.memory.Array<Float> = allocateArray(NativeTypes.FLOAT, floats)
-fun Scope.floatArrayOf(vararg floats: Float): java.foreign.memory.Array<Float> = allocateArray(NativeTypes.FLOAT, FloatArray(floats.size) { floats[it] })
-fun Scope.shortArrayOf(vararg shorts: Short): java.foreign.memory.Array<Short> = allocateArray(NativeTypes.INT16, ShortArray(shorts.size) { shorts[it] })
+fun Scope.floatArrayOf(vararg floats: Float): java.foreign.memory.Array<Float> =
+    allocateArray(NativeTypes.FLOAT, FloatArray(floats.size) { floats[it] })
+
+fun Scope.shortArrayOf(vararg shorts: Short): java.foreign.memory.Array<Short> =
+    allocateArray(NativeTypes.INT16, ShortArray(shorts.size) { shorts[it] })
 
 val <T>java.foreign.memory.Array<T>.ptr: Pointer<T>
     get() = elementPointer()

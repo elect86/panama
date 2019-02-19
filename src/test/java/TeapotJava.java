@@ -47,10 +47,10 @@ public class TeapotJava {
     }
 
     public static void main(String[] args) {
-        try (Scope sc = Scope.newNativeScope()) {
+        try (Scope sc = Scope.globalScope()) {
             Pointer<Integer> argc = sc.allocate(NativeTypes.INT32);
             argc.set(0);
-            glutInit(argc, Pointer.nullPointer());
+            glutInit(argc, Pointer.ofNull());
             glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
             glutInitWindowSize(900, 900);
             glutCreateWindow(sc.allocateCString("Hello Panama!"));

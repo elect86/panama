@@ -12,12 +12,12 @@ fun main() {
     if (glfwInit() == 0)
         System.exit(-1)
 
-    val sc = Scope.newNativeScope()
+    val sc = Scope.globalScope()
 
     // Create a windowed mode window and its OpenGL context
     val title: Pointer<Byte> = Pointer.fromByteBuffer(memUTF8("Hello World"))
     val window: Pointer<glfw3.GLFWwindow> =
-        glfwCreateWindow(640, 480, title, Pointer.nullPointer(), Pointer.nullPointer())
+        glfwCreateWindow(640, 480, title, Pointer.ofNull(), Pointer.ofNull())
     if (window.isNull) {
         glfwTerminate()
         System.exit(-1)

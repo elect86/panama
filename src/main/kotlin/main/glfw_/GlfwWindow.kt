@@ -39,7 +39,7 @@ open class GlfwWindow(var ptr: Pointer<GLFWwindow>) {
         title: String, monitor: GlfwMonitor? = null,
         share: GlfwWindow? = null
     ) : this(scope(title) {
-        glfwCreateWindow(width, height, it, monitor?.ptr ?: Pointer.nullPointer(), share?.ptr ?: Pointer.nullPointer())
+        glfwCreateWindow(width, height, it, monitor?.ptr ?: Pointer.ofNull(), share?.ptr ?: Pointer.ofNull())
     })
 
 //    @Throws(RuntimeException::class)
@@ -354,7 +354,7 @@ open class GlfwWindow(var ptr: Pointer<GLFWwindow>) {
 
     fun makeContextCurrent() = glfwMakeContextCurrent(ptr)
 
-    fun unmakeContextCurrent() = glfwMakeContextCurrent(Pointer.nullPointer())
+    fun unmakeContextCurrent() = glfwMakeContextCurrent(Pointer.ofNull())
 
 
     fun swapBuffers() = glfwSwapBuffers(ptr)

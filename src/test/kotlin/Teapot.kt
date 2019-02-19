@@ -10,7 +10,7 @@ fun main() {
     scope {
         val argc = allocate(NativeTypes.INT32)
         argc.set(0)
-        glutInit(argc, Pointer.nullPointer())
+        glutInit(argc, Pointer.ofNull())
         glutInitDisplayMode(GLUT_DOUBLE or GLUT_RGBA or GLUT_DEPTH)
         glutInitWindowSize(900, 900)
         glutCreateWindow(allocateCString("Hello Panama!"))
