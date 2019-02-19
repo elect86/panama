@@ -10,6 +10,7 @@ import opengl.gl_h.*
 import opengl.glext_h.*
 import java.foreign.NativeTypes
 import java.foreign.Scope
+import java.foreign.memory.Array
 import java.foreign.memory.Pointer
 import kotlin.system.exitProcess
 
@@ -42,12 +43,11 @@ class Triangle(
     val pMVP: Pointer<Float>
     val vertexArray = scope.allocInt()
 
-    val vertexBufferData = scope.allocateArray(
-        NativeTypes.FLOAT, floatArrayOf(
+    val vertexBufferData: Array<Float> = scope.floatArrayOf(
             -1f, -1f, -1f, 0f, 0f, 1f,
             +1f, -1f, -1f, 0f, 1f, 0f,
-            +0f, +1f, -1f, 1f, 0f, 0f))
-    val indexBufferData = scope.allocateArray(NativeTypes.INT16, shortArrayOf(0, 1, 2))
+            +0f, +1f, -1f, 1f, 0f, 0f)
+    val indexBufferData = scope.shortArrayOf(0, 1, 2)
 
     init {
         makeContextCurrent()
@@ -64,7 +64,7 @@ class Triangle(
             Vec3(0f, 1f, 0f)
         )
         val mvp = proj * view
-        pMVP = scope.allocateArray(NativeTypes.FLOAT, mvp.toFloatArray()).elementPointer()
+        pMVP = scope.alloc(mvp.toFloatArray()).ptr
 
         // Init VAO
         val vertexBuffer = scope.allocInt()
@@ -78,7 +78,7 @@ class Triangle(
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer())
         glBufferData(
             GL_ARRAY_BUFFER, vertexBufferData.bytesSize(),
-            vertexBufferData.elementPointer(), GL_STATIC_DRAW
+            vertexBufferData.ptr, GL_STATIC_DRAW
         )
 
         glEnableVertexAttribArray(semantic.attr.POSITION)
@@ -98,7 +98,7 @@ class Triangle(
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer())
         glBufferData(
             GL_ELEMENT_ARRAY_BUFFER, indexBufferData.bytesSize(),
-            indexBufferData.elementPointer(), GL_STATIC_DRAW
+            indexBufferData.ptr, GL_STATIC_DRAW
         )
 
         glBindVertexArray(0)
@@ -205,7 +205,7 @@ fun makeShader(type: Int, source: String): Int = scope {
         glDeleteShader(shader)
         return 0
     }
-    return shader
+    shader
 }
 
 fun showInfoLog(shader: Int) = scope {

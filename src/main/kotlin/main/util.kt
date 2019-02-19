@@ -36,10 +36,11 @@ operator fun <T> Pointer<T>.invoke(): T = get()
 operator fun <T> java.foreign.memory.Array<T>.get(i: Int): T = get(i.L)
 
 
-inline fun <reified T> Pointer<T>.toArraySafe(size: Pointer<Int>): Array<Pointer<T>>? = when{
+inline fun <reified T> Pointer<T>.toArraySafe(size: Pointer<Int>): Array<Pointer<T>>? = when {
     isNull -> null
     else -> toArray(size)
 }
+
 inline fun <reified T> Pointer<T>.toArray(size: Pointer<Int>): Array<Pointer<T>> = Array(size()) { offset(it.L) }
 
 fun Pointer<Byte>.toTypedArraySafe(size: Pointer<Int>): ByteArray? = when {
@@ -62,3 +63,10 @@ fun Pointer<Float>.toTypedArraySafe(size: Pointer<Int>): FloatArray? = when {
 }
 
 fun Pointer<Float>.toTypedArray(size: Pointer<Int>): FloatArray = FloatArray(size()) { offset(it.L)() }
+
+fun Scope.alloc(floats: FloatArray): java.foreign.memory.Array<Float> = allocateArray(NativeTypes.FLOAT, floats)
+fun Scope.floatArrayOf(vararg floats: Float): java.foreign.memory.Array<Float> = allocateArray(NativeTypes.FLOAT, FloatArray(floats.size) { floats[it] })
+fun Scope.shortArrayOf(vararg shorts: Short): java.foreign.memory.Array<Short> = allocateArray(NativeTypes.INT16, ShortArray(shorts.size) { shorts[it] })
+
+val <T>java.foreign.memory.Array<T>.ptr: Pointer<T>
+    get() = elementPointer()
