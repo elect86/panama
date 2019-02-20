@@ -35,7 +35,7 @@ dependencies {
             runtime "org.lwjgl:lwjgl$it:$lwjgl_version:natives-$lwjgl_natives"
     }
 
-    compile files("opengl.jar", "glfw.jar")
+    compile files("opengl.jar", "glfw.jar", "vulkan.jar")
 }
 
 compileKotlin {
